@@ -15,10 +15,11 @@ private:
 	UINT g4xMsaaQuality;
 
 	IDXGISwapChain* gSwapChain;
-	ID3D11RenderTargetView* gRenderTargetView;
+	ID3D11RenderTargetView* gRenderTargetView; //need this here?
+
+	ID3D11Texture2D* mDepthStencilBuffer;
+	ID3D11DepthStencilView* mDepthStencilView;
 	
-
-
 public:
 	Engine();
 	virtual ~Engine();

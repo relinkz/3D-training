@@ -11,6 +11,9 @@ Engine::Engine()
 
 	this->gSwapChain = nullptr;
 	this->gRenderTargetView = nullptr;
+
+	this->mDepthStencilBuffer = nullptr;
+	this->mDepthStencilView = nullptr;
 }
 
 
@@ -125,6 +128,62 @@ bool Engine::initialize(HWND* window)
 	//but what happens whith the backbuffer??????
 	backBuffer->Release();
 
+	/*
+	Depth stencil / z-buffer and view
+	*/
+
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	depthStencilDesc.Width = CLIENT_WIDTH;
+	depthStencilDesc.Height = CLIENT_HEIGHT;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	if (this->enable4xMSAA)
+	{
+		depthStencilDesc.SampleDesc.Count = 4;
+		depthStencilDesc.SampleDesc.Quality = this->g4xMsaaQuality;
+	}
+	else
+	{
+		depthStencilDesc.SampleDesc.Count = 1;
+		depthStencilDesc.SampleDesc.Quality = 0;
+	}
+
+	result = this->gDevice->CreateTexture2D(&depthStencilDesc, 0, &this->mDepthStencilBuffer);
+
+	if (FAILED(result))
+	{
+		MessageBox(0, L"Creating Depth-buffer failed.", 0, 0);
+		return false;
+	}
+
+	result = this->gDevice->CreateDepthStencilView(this->mDepthStencilBuffer, 0, &this->mDepthStencilView);
+
+	if (FAILED(result))
+	{
+		MessageBox(0, L"Creating Depth-stencil view failed.", 0, 0);
+		return false;
+	}
+
+	this->gDeviceContext->OMSetRenderTargets(1, &gRenderTargetView, this->mDepthStencilView);
+
+	/*
+	Set viewport
+	*/
+	D3D11_VIEWPORT vp;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	vp.Width = static_cast<float>(CLIENT_WIDTH);
+	vp.Height = static_cast<float>(CLIENT_HEIGHT);
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+
+	this->gDeviceContext->RSSetViewports(1,&vp);
 
 	return true;
 }
@@ -141,6 +200,18 @@ void Engine::shutdown()
 	{
 		this->gRenderTargetView->Release();
 		this->gRenderTargetView = nullptr;
+	}
+
+	if (this->mDepthStencilBuffer != nullptr)
+	{
+		this->mDepthStencilBuffer->Release();
+		this->mDepthStencilBuffer = nullptr;
+	}
+
+	if (this->mDepthStencilView != nullptr)
+	{
+		this->mDepthStencilView->Release();
+		this->mDepthStencilView = nullptr;
 	}
 
 	if (this->gDeviceContext != nullptr)
