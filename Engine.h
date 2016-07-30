@@ -15,6 +15,8 @@ private:
 	UINT g4xMsaaQuality;
 
 	IDXGISwapChain* gSwapChain;
+	ID3D11RenderTargetView* gRenderTargetView;
+	
 
 
 public:
@@ -22,5 +24,6 @@ public:
 	virtual ~Engine();
 
 	bool initialize(HWND* window);
+	void shutdown();
 };
 

@@ -3,9 +3,11 @@
 // Added some comments (Francisco)
 //--------------------------------------------------------------------------------------
 #include "Engine.h"
+#include <crtdbg.h.>
 
 HWND InitWindow(HINSTANCE hInstance);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
 
 
 
@@ -19,6 +21,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 */
 int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow )
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	MSG msg = { 0 };
 
 	// create window
@@ -55,6 +58,11 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 
 		// finish the program
 		DestroyWindow(wndHandle);
+
+		//release resourses
+		engine.shutdown();
+
+
 	}
 
 	// return how the program finished.

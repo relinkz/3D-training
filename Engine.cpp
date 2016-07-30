@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <atlbase.h>
 
 Engine::Engine()
 {
@@ -7,6 +8,9 @@ Engine::Engine()
 	
 	this->g4xMsaaQuality = 0;
 	this->enable4xMSAA = false;
+
+	this->gSwapChain = nullptr;
+	this->gRenderTargetView = nullptr;
 }
 
 
@@ -104,5 +108,50 @@ bool Engine::initialize(HWND* window)
 	//create the swapchain
 	result = dxgiFactory->CreateSwapChain(this->gDevice, &sd, &this->gSwapChain);
 
+	//realeasing the com object since they are no longer needed
+	dxgiDevice->Release();
+	dxgiAdapter->Release();
+	dxgiFactory->Release();
+
+	//*************************
+	//render target view    ***
+	//*************************
+	ID3D11Texture2D* backBuffer;
+	this->gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
+	
+	result = this->gDevice->CreateRenderTargetView(backBuffer, 0, &this->gRenderTargetView);
+
+	//the getBuffer increases the com reference count, therefore releasing it,
+	//but what happens whith the backbuffer??????
+	backBuffer->Release();
+
+
 	return true;
+}
+
+void Engine::shutdown()
+{
+	if (this->gSwapChain != nullptr)
+	{
+		this->gSwapChain->Release();
+		this->gSwapChain = nullptr;
+	}
+
+	if (this->gRenderTargetView != nullptr)
+	{
+		this->gRenderTargetView->Release();
+		this->gRenderTargetView = nullptr;
+	}
+
+	if (this->gDeviceContext != nullptr)
+	{
+		this->gDeviceContext->Release();
+		this->gDeviceContext = nullptr;
+	}
+
+	if (this->gDevice != nullptr)
+	{
+		this->gDevice->Release();
+		this->gDevice = nullptr;
+	}
 }
