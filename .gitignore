@@ -3,6 +3,9 @@
 *.lo
 *.o
 *.obj
+*.sdf
+*.opensdf
+*.suo
 
 # Precompiled Headers
 *.gch
@@ -26,6 +29,12 @@
 *.exe
 *.out
 *.app
+
+# Debug and release modes
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
 
 # =========================
 # Operating System Files
