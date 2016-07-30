@@ -2,10 +2,14 @@
 // BTH - Stefan Petersson 2014. All rights reserved.
 // Added some comments (Francisco)
 //--------------------------------------------------------------------------------------
-#include <windows.h>
+#include "Engine.h"
 
 HWND InitWindow(HINSTANCE hInstance);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+
+
+
 
 /*
  Entry point for our program
@@ -19,12 +23,20 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 
 	// create window
 	HWND wndHandle = InitWindow(hInstance);
+
+	//create engine
+	Engine engine;
 	
 	// window is valid
 	if (wndHandle)
 	{
 		// display window
 		ShowWindow(wndHandle, nCmdShow);
+
+		//initialize engine
+		engine.initialize(&wndHandle);
+
+
 		// enter message loop, loop until the message WM_QUIT is received.
 		while (WM_QUIT != msg.message)
 		{
@@ -66,14 +78,14 @@ HWND InitWindow(HINSTANCE hInstance)
 		return false;
 
 	// define a struct for the window size
-	RECT rc = { 0, 0, 640, 480 };
+	RECT rc = { 0, 0, CLIENT_WIDTH, CLIENT_HEIGHT };
 	// create the window to this size and with additional properties
 	// (border, menu, etc)
 	AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
 	
 	HWND handle = CreateWindow(
 		L"BasicWindow",			// CLASS, if does not exists fails!
-		L"BTH BasicWindow",		// Window name (title)
+		L"Sebbe tries hard",		// Window name (title)
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
