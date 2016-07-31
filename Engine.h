@@ -14,7 +14,9 @@ private:
 	bool enable4xMSAA; //false by default
 	UINT g4xMsaaQuality;
 
+	//interface hanling the front and backbuffer
 	IDXGISwapChain* gSwapChain;
+
 	ID3D11RenderTargetView* gRenderTargetView; //need this here?
 
 	ID3D11Texture2D* mDepthStencilBuffer;
