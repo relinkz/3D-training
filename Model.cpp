@@ -46,16 +46,18 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 	desc.MiscFlags = false;
 	desc.StructureByteStride = 0;
 
+	//dynamic buffers does not need initial data
 	result = gDevice->CreateBuffer(&desc, nullptr, &this->vertexBuffer);
-
-
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	
+	//map the memory, so that it cant be used in gpu while we change it
 	result = gDeviceContext->Map(this->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+	//read the data and save them in a variable
 	Vertex1* v = reinterpret_cast<Vertex1*>(mappedData.pData);
-
 	UINT size = this->vertexData1.size();
+
+	//finally write the data into the vertex buffer
 	for (UINT i = 0; i < size; i++)
 	{
 		v[i] = this->vertexData1.at(i);
