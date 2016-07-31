@@ -3,7 +3,6 @@
 // Added some comments (Francisco)
 //--------------------------------------------------------------------------------------
 #include "Engine.h"
-#include "Model.h"
 #include <crtdbg.h.>
 
 HWND InitWindow(HINSTANCE hInstance);
@@ -46,6 +45,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		//initialize triangle
 		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext());
 
+		
+
 		// enter message loop, loop until the message WM_QUIT is received.
 		while (WM_QUIT != msg.message)
 		{
@@ -59,6 +60,7 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 			else
 			{
 				// update/render goes here
+				engine.drawObject(triangle);
 			}
 		}
 

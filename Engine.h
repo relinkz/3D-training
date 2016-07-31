@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include"GlobalData.h"
+#include "Model.h"
 
 class Engine
 {
@@ -37,5 +38,7 @@ public:
 
 	ID3D11Device* getDevice();
 	ID3D11DeviceContext* getDeviceContext();
+
+	void drawObject(Model &toDraw);
 };
 

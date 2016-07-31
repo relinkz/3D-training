@@ -20,6 +20,8 @@ public:
 	void generateTriangle();
 	void initializeTriangle(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
 
+	ID3D11Buffer* getVertexBuffer() const;
+
 	void shutdown();
 	
 	//load from file

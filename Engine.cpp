@@ -317,3 +317,31 @@ ID3D11DeviceContext* Engine::getDeviceContext()
 {
 	return this->gDeviceContext;
 }
+
+void Engine::drawObject(Model &toDraw)
+{
+	float black[4] = { 0.0f,0.0f,0.0f, 1.0f };
+	this->gDeviceContext->ClearRenderTargetView(this->gRenderTargetView, black);
+	this->gDeviceContext->ClearDepthStencilView(this->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	
+	this->gDeviceContext->IASetInputLayout(this->inputLayout);
+	this->gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	this->gDeviceContext->VSSetShader(this->vertexShader, nullptr, 0);
+	this->gDeviceContext->HSSetShader(nullptr, nullptr, 0);
+	this->gDeviceContext->DSSetShader(nullptr, nullptr, 0);
+	this->gDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	this->gDeviceContext->PSSetShader(this->pixelShader, nullptr, 0);
+
+
+	UINT stride = sizeof(Vertex1);
+	UINT offset = 0;
+
+	ID3D11Buffer* vBuffer= nullptr;
+	vBuffer = toDraw.getVertexBuffer();
+
+	this->gDeviceContext->IASetVertexBuffers(0, 1, &vBuffer, &stride, &offset);
+
+	this->gDeviceContext->Draw(3, 0);
+	HRESULT result = this->gSwapChain->Present(0, 0);
+}

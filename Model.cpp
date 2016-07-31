@@ -58,6 +58,11 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 
 }
 
+ID3D11Buffer* Model::getVertexBuffer() const
+{
+	return this->vertexBuffer;
+}
+
 void Model::shutdown()
 {
 	if (this->vertexBuffer != nullptr)
