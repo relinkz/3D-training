@@ -19,13 +19,13 @@ void Model::generateTriangle()
 	Vertex1 v2;
 
 	v0.Pos = DirectX::XMFLOAT3(0, 1, 0);
-	v0.Color = DirectX::XMFLOAT4(0, 255, 0, 1); //green
+	v0.Color = DirectX::XMFLOAT4(0, 1, 0, 1); //green
 
 	v1.Pos = DirectX::XMFLOAT3(1, 0, 0);
-	v1.Color = DirectX::XMFLOAT4(255, 0, 0, 1); //red
+	v1.Color = DirectX::XMFLOAT4(1, 0, 0, 1); //red
 
 	v2.Pos = DirectX::XMFLOAT3(-1, 0, 0);
-	v2.Color = DirectX::XMFLOAT4(255, 0, 0, 1);	//red
+	v2.Color = DirectX::XMFLOAT4(0, 0, 1, 1); //blue
 
 	this->vertexData1.push_back(v0);
 	this->vertexData1.push_back(v1);
