@@ -49,12 +49,20 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 	result = gDevice->CreateBuffer(&desc, nullptr, &this->vertexBuffer);
 
 
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	mappedData.pData = this->vertexData1.data();
+	
+	result = gDeviceContext->Map(this->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+	//mappedData.pData = this->vertexData1.data();
+	Vertex1* v = reinterpret_cast<Vertex1*>(mappedData.pData);
+
+	UINT size = this->vertexData1.size();
+	for (UINT i = 0; i < size; i++)
+	{
+		v[i] = this->vertexData1.at(i);
+	}
 
 	gDeviceContext->Unmap(this->vertexBuffer, 0);
-
-	
 
 }
 
