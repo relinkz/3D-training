@@ -14,6 +14,12 @@ Engine::Engine()
 
 	this->mDepthStencilBuffer = nullptr;
 	this->mDepthStencilView = nullptr;
+
+	this->vertexShader = nullptr;
+	this->pixelShader = nullptr;
+
+	this->indexBuffer = nullptr;
+	this->inputLayout = nullptr;
 }
 
 
@@ -185,11 +191,86 @@ bool Engine::initialize(HWND* window)
 
 	this->gDeviceContext->RSSetViewports(1,&vp);
 
+	/*
+	creating shaders
+	*/
+
+	ID3DBlob* errorBlob = nullptr;
+	//creating the vertexshader
+
+	ID3DBlob* pVS = nullptr;
+	D3DCompileFromFile(
+		L"Vertex.hlsl", // filename
+		nullptr,		// optional macros
+		nullptr,		// optional include files
+		"VS_main",		// entry point
+		"vs_5_0",		// shader model (target)
+		D3DCOMPILE_DEBUG,				// shader compile options
+		0,				// effect compile options
+		&pVS,			// double pointer to ID3DBlob		
+		nullptr			// pointer for Error Blob messages.
+						// how to use the Error blob, see here
+						// https://msdn.microsoft.com/en-us/library/windows/desktop/hh968107(v=vs.85).aspx
+		);
+
+	result = gDevice->CreateVertexShader(pVS->GetBufferPointer(), pVS->GetBufferSize(), nullptr, &this->vertexShader);
+
+	//creating the input layout
+	D3D11_INPUT_ELEMENT_DESC desc1[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	result = gDevice->CreateInputLayout(desc1, 2, pVS->GetBufferPointer(), pVS->GetBufferSize(), &this->inputLayout);
+	pVS->Release();
+
+	ID3DBlob* pPS = nullptr;
+	D3DCompileFromFile(
+		L"Fragment.hlsl", // filename		//L"PixelShader.hlsl"
+		nullptr,		// optional macros
+		nullptr,		// optional include files
+		"PS_main",		// entry point
+		"ps_5_0",		// shader model (target)
+		D3DCOMPILE_DEBUG,				// shader compile options
+		0,				// effect compile options
+		&pPS,			// double pointer to ID3DBlob		
+		nullptr			// pointer for Error Blob messages.
+						// how to use the Error blob, see here
+						// https://msdn.microsoft.com/en-us/library/windows/desktop/hh968107(v=vs.85).aspx
+		);
+
+	result = gDevice->CreatePixelShader(pPS->GetBufferPointer(), pPS->GetBufferSize(), nullptr, &this->pixelShader);
+
 	return true;
 }
 
 void Engine::shutdown()
 {
+	if (this->vertexShader != nullptr)
+	{
+		this->vertexShader->Release();
+		this->vertexShader = nullptr;
+	}
+
+	if (this->pixelShader != nullptr)
+	{
+		this->pixelShader->Release();
+		this->pixelShader = nullptr;
+	}
+
+	if (this->inputLayout != nullptr)
+	{
+		this->inputLayout->Release();
+		this->inputLayout = nullptr;
+	}
+
+	if (this->indexBuffer != nullptr)
+	{
+		this->indexBuffer->Release();
+		this->indexBuffer = nullptr;
+	}
+
 	if (this->gSwapChain != nullptr)
 	{
 		this->gSwapChain->Release();
@@ -225,4 +306,14 @@ void Engine::shutdown()
 		this->gDevice->Release();
 		this->gDevice = nullptr;
 	}
+}
+
+ID3D11Device* Engine::getDevice()
+{
+	return this->gDevice;
+}
+
+ID3D11DeviceContext* Engine::getDeviceContext()
+{
+	return this->gDeviceContext;
 }

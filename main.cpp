@@ -3,6 +3,7 @@
 // Added some comments (Francisco)
 //--------------------------------------------------------------------------------------
 #include "Engine.h"
+#include "Model.h"
 #include <crtdbg.h.>
 
 HWND InitWindow(HINSTANCE hInstance);
@@ -29,6 +30,9 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 
 	//create engine
 	Engine engine;
+
+	//create triangle
+	Model triangle;
 	
 	// window is valid
 	if (wndHandle)
@@ -39,6 +43,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		//initialize engine
 		engine.initialize(&wndHandle);
 
+		//initialize triangle
+		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext());
 
 		// enter message loop, loop until the message WM_QUIT is received.
 		while (WM_QUIT != msg.message)
@@ -61,6 +67,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 
 		//release resourses
 		engine.shutdown();
+
+		triangle.shutdown();
 
 
 	}
