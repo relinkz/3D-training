@@ -50,6 +50,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext());
 
 		gameCamera.getViewMatrix();
+		gameCamera.getProjectionMatrix();
+		gameCamera.getOrthogMatrix();
 		
 
 		// enter message loop, loop until the message WM_QUIT is received.
