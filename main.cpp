@@ -3,6 +3,7 @@
 // Added some comments (Francisco)
 //--------------------------------------------------------------------------------------
 #include "Engine.h"
+#include "Camera.h"
 #include <crtdbg.h.>
 
 HWND InitWindow(HINSTANCE hInstance);
@@ -30,6 +31,9 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 	//create engine
 	Engine engine;
 
+	//create camera
+	Camera gameCamera;
+
 	//create triangle
 	Model triangle;
 	
@@ -41,10 +45,11 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 
 		//initialize engine
 		engine.initialize(&wndHandle);
-
+		
 		//initialize triangle
 		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext());
 
+		gameCamera.getViewMatrix();
 		
 
 		// enter message loop, loop until the message WM_QUIT is received.
