@@ -53,7 +53,6 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	
 	result = gDeviceContext->Map(this->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
-	//mappedData.pData = this->vertexData1.data();
 	Vertex1* v = reinterpret_cast<Vertex1*>(mappedData.pData);
 
 	UINT size = this->vertexData1.size();
