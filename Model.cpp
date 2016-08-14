@@ -5,6 +5,7 @@
 Model::Model()
 {
 	this->vertexBuffer	= nullptr;
+	this->worldMatrix = DirectX::XMMatrixIdentity();
 }
 
 
@@ -18,6 +19,9 @@ void Model::generateTriangle()
 	Vertex1 v1;
 	Vertex1 v2;
 
+
+
+	//Vertex data
 	v0.Pos = DirectX::XMFLOAT3(0, 1, 0);
 	v0.Color = DirectX::XMFLOAT4(0, 1, 0, 1); //green
 
@@ -26,17 +30,42 @@ void Model::generateTriangle()
 
 	v2.Pos = DirectX::XMFLOAT3(-1, 0, 0);
 	v2.Color = DirectX::XMFLOAT4(0, 0, 1, 1); //blue
-
+	
 	this->vertexData1.push_back(v0);
 	this->vertexData1.push_back(v1);
 	this->vertexData1.push_back(v2);
 }
 
-void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
+void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, const DirectX::XMFLOAT3& pos)
 {
 	HRESULT result;
 
+	//raw vertex data
 	this->generateTriangle();
+
+	DirectX::XMFLOAT3X3 worldCoord;
+	for (int i = 0; i < 3; i++)
+	{
+		Vertex1 temp;
+		temp = this->vertexData1.at(i);
+
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+
+		x = temp.Pos.x;
+		y = temp.Pos.y;
+		z = temp.Pos.z;
+
+		worldCoord.m[i][0] = x;
+		worldCoord.m[i][1] = y;
+		worldCoord.m[i][2] = z;
+	}
+
+	//convert to xmmatrix
+	this->worldMatrix = DirectX::XMLoadFloat3x3(&worldCoord);
+	//place it in the world (origin now relative to world instead of local origin)
+	this->worldMatrix = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	D3D11_BUFFER_DESC desc;
 	desc.Usage = D3D11_USAGE_DYNAMIC;
@@ -70,6 +99,11 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 ID3D11Buffer* Model::getVertexBuffer() const
 {
 	return this->vertexBuffer;
+}
+
+DirectX::XMMATRIX Model::getWorldModel() const
+{
+	return this->worldMatrix;
 }
 
 void Model::shutdown()
