@@ -20,6 +20,8 @@ Engine::Engine()
 
 	this->indexBuffer = nullptr;
 	this->inputLayout = nullptr;
+
+	this->matrixBuffer = nullptr;
 }
 
 
@@ -295,6 +297,12 @@ void Engine::shutdown()
 		this->mDepthStencilView = nullptr;
 	}
 
+	if (this->matrixBuffer != nullptr)
+	{
+		this->matrixBuffer->Release();
+		this->matrixBuffer = nullptr;
+	}
+
 	if (this->gDeviceContext != nullptr)
 	{
 		this->gDeviceContext->Release();
@@ -318,6 +326,36 @@ ID3D11DeviceContext* Engine::getDeviceContext()
 	return this->gDeviceContext;
 }
 
+void Engine::fillCBuffers(DirectX::XMMATRIX modelWorldMatrix, const Camera &gameCamera)
+{
+	HRESULT result;
+
+	D3D11_BUFFER_DESC desc;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+	desc.ByteWidth = sizeof(dynamicResource);
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	desc.MiscFlags = false;
+	desc.StructureByteStride = 0;
+
+	//dynamic buffers does not need initial data
+	result = gDevice->CreateBuffer(&desc, nullptr, &this->matrixBuffer);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+
+	//map the memory, so that it cant be used in gpu while we change it
+	result = gDeviceContext->Map(this->matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+	//read the data and save them in a variable
+	dynamicResource* v = reinterpret_cast<dynamicResource*>(mappedData.pData);
+
+	//finally write the data into the vertex buffer
+	v->worldMatrix = modelWorldMatrix;
+	v->viewMatrix = gameCamera.getViewMatrix();
+	v->projectionMatrix = gameCamera.getProjectionMatrix();
+
+	gDeviceContext->Unmap(this->matrixBuffer, 0);
+}
+
 void Engine::drawObject(Model &toDraw)
 {
 	float black[4] = { 0.0f,0.0f,0.0f, 1.0f };
@@ -327,7 +365,10 @@ void Engine::drawObject(Model &toDraw)
 	this->gDeviceContext->IASetInputLayout(this->inputLayout);
 	this->gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	//set vertex shader and data
 	this->gDeviceContext->VSSetShader(this->vertexShader, nullptr, 0);
+	this->gDeviceContext->VSSetConstantBuffers(0, 1, &this->matrixBuffer);
+	
 	this->gDeviceContext->HSSetShader(nullptr, nullptr, 0);
 	this->gDeviceContext->DSSetShader(nullptr, nullptr, 0);
 	this->gDeviceContext->GSSetShader(nullptr, nullptr, 0);

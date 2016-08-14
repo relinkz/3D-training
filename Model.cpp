@@ -103,7 +103,10 @@ ID3D11Buffer* Model::getVertexBuffer() const
 
 DirectX::XMMATRIX Model::getWorldModel() const
 {
-	return this->worldMatrix;
+	DirectX::XMMATRIX toReturn;
+	toReturn = DirectX::XMMatrixTranspose(this->worldMatrix);
+
+	return toReturn;
 }
 
 void Model::shutdown()

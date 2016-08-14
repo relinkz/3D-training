@@ -2,9 +2,17 @@
 #include <windows.h>
 #include"GlobalData.h"
 #include "Model.h"
+#include "Camera.h"
 
 class Engine
 {
+private:
+	struct dynamicResource
+	{
+		DirectX::XMMATRIX worldMatrix;
+		DirectX::XMMATRIX viewMatrix;
+		DirectX::XMMATRIX projectionMatrix;
+	};
 private:
 	//This interface sets renderstates, bind resourses to the graphics pipeline, and issues rendering commands
 	ID3D11DeviceContext* gDeviceContext;
@@ -27,6 +35,8 @@ private:
 	ID3D11PixelShader* pixelShader;
 
 	ID3D11Buffer* indexBuffer;
+	ID3D11Buffer* matrixBuffer;
+
 	ID3D11InputLayout* inputLayout;
 	
 public:
@@ -39,6 +49,7 @@ public:
 	ID3D11Device* getDevice();
 	ID3D11DeviceContext* getDeviceContext();
 
+	void fillCBuffers(DirectX::XMMATRIX modelWorldMatrix, const Camera &gameCamera);
 	void drawObject(Model &toDraw);
 };
 

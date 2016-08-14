@@ -2,8 +2,7 @@
 // BTH - Stefan Petersson 2014. All rights reserved.
 // Added some comments (Francisco)
 //--------------------------------------------------------------------------------------
-#include "Engine.h"
-#include "Camera.h"
+#include "Engine.h" //model, camera, globaldata included here
 #include <crtdbg.h.>
 
 HWND InitWindow(HINSTANCE hInstance);
@@ -63,6 +62,7 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 			else
 			{
 				// update/render goes here
+				engine.fillCBuffers(triangle.getWorldModel(), gameCamera);
 				engine.drawObject(triangle);
 			}
 		}
