@@ -43,8 +43,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		engine.initialize(&wndHandle);
 
 		//initialize triangle
-		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext());
-
+		DirectX::XMFLOAT3 worldpos(0, 0, 2);
+		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext(), worldpos);
 		
 
 		// enter message loop, loop until the message WM_QUIT is received.
