@@ -39,6 +39,8 @@ void Model::generateTriangle()
 void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, const DirectX::XMFLOAT3& pos)
 {
 	HRESULT result;
+	//place triangle in world
+	this->worldPos = pos;
 
 	//raw vertex data
 	this->generateTriangle();
@@ -62,9 +64,6 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 		worldCoord.m[i][2] = z;
 	}
 
-	//convert to xmmatrix
-	this->worldMatrix = DirectX::XMLoadFloat3x3(&worldCoord);
-	//place it in the world (origin now relative to world instead of local origin)
 	this->worldMatrix = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	D3D11_BUFFER_DESC desc;
@@ -103,10 +102,30 @@ ID3D11Buffer* Model::getVertexBuffer() const
 
 DirectX::XMMATRIX Model::getWorldModel() const
 {
-	DirectX::XMMATRIX toReturn;
-	toReturn = DirectX::XMMatrixTranspose(this->worldMatrix);
+	return DirectX::XMMatrixTranspose(this->worldMatrix);
+}
 
-	return toReturn;
+DirectX::XMMATRIX Model::getWorldModelWithRotation(const float & degrees)
+{
+	DirectX::XMMATRIX rotationMatrix;
+	DirectX::XMFLOAT3 pos = this->worldPos;
+	float x, y, z;
+	x = this->worldPos.x * -1;
+	y = this->worldPos.y * -1;
+	z = this->worldPos.z * -1;
+
+	//translate the worldmatrix to origin first
+	this->worldMatrix *= DirectX::XMMatrixTranslation(x, y, z);
+	
+	//add rotation
+	rotationMatrix = DirectX::XMMatrixRotationY(degrees);
+	this->worldMatrix *= rotationMatrix;
+	
+	//translate back
+	this->worldMatrix *= DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+	//DirectX want it transposed in the gpu
+	return DirectX::XMMatrixTranspose(this->worldMatrix);
 }
 
 void Model::shutdown()

@@ -9,9 +9,11 @@ The model class has everything in local space
 class Model
 {
 private:
+	DirectX::XMFLOAT3 worldPos;
 	DirectX::XMMATRIX worldMatrix;
-	std::vector<Vertex1>vertexData1;
+	
 
+	std::vector<Vertex1>vertexData1;
 	ID3D11Buffer* vertexBuffer;
 	
 public:
@@ -23,6 +25,7 @@ public:
 
 	ID3D11Buffer* getVertexBuffer() const;
 	DirectX::XMMATRIX getWorldModel() const;
+	DirectX::XMMATRIX getWorldModelWithRotation(const float &degrees);
 
 	void shutdown();
 	
