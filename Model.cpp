@@ -113,8 +113,6 @@ void Model::shutdown()
 		this->vertexBuffer->Release();
 		this->vertexBuffer = nullptr;
 	}
-
-
 }
 
 
