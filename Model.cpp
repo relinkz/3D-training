@@ -6,6 +6,12 @@ Model::Model()
 {
 	this->vertexBuffer	= nullptr;
 	this->worldMatrix = DirectX::XMMatrixIdentity();
+
+	this->scaleMatrix = DirectX::XMMatrixIdentity();
+	this->rotationMatrix = DirectX::XMMatrixIdentity();
+	this->translationMatrix = DirectX::XMMatrixIdentity();
+
+	this->isSpinning = false;
 }
 
 
@@ -31,9 +37,9 @@ void Model::generateTriangle()
 	v2.Pos = DirectX::XMFLOAT3(-1, 0, 0);
 	v2.Color = DirectX::XMFLOAT4(0, 0, 1, 1); //blue
 	
-	this->vertexData1.push_back(v0);
-	this->vertexData1.push_back(v1);
-	this->vertexData1.push_back(v2);
+	this->vertexData.push_back(v0);
+	this->vertexData.push_back(v1);
+	this->vertexData.push_back(v2);
 }
 
 void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, const DirectX::XMFLOAT3& pos)
@@ -49,7 +55,7 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 	for (int i = 0; i < 3; i++)
 	{
 		Vertex1 temp;
-		temp = this->vertexData1.at(i);
+		temp = this->vertexData.at(i);
 
 		float x = 0.0f;
 		float y = 0.0f;
@@ -64,11 +70,15 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 		worldCoord.m[i][2] = z;
 	}
 
-	this->worldMatrix = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+	this->translationMatrix = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+	this->rotateModelY(0);
+	this->setUniformScale(1);
+	this->spinnY(0.001);
 
 	D3D11_BUFFER_DESC desc;
 	desc.Usage = D3D11_USAGE_DYNAMIC;
-	desc.ByteWidth = sizeof(Vertex1) * this->vertexData1.size();
+	desc.ByteWidth = sizeof(Vertex1) * this->vertexData.size();
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.MiscFlags = false;
@@ -83,12 +93,12 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 	result = gDeviceContext->Map(this->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
 	//read the data and save them in a variable
 	Vertex1* v = reinterpret_cast<Vertex1*>(mappedData.pData);
-	UINT size = this->vertexData1.size();
+	UINT size = this->vertexData.size();
 
 	//finally write the data into the vertex buffer
 	for (UINT i = 0; i < size; i++)
 	{
-		v[i] = this->vertexData1.at(i);
+		v[i] = this->vertexData.at(i);
 	}
 
 	gDeviceContext->Unmap(this->vertexBuffer, 0);
@@ -105,27 +115,29 @@ DirectX::XMMATRIX Model::getWorldModel() const
 	return DirectX::XMMatrixTranspose(this->worldMatrix);
 }
 
-DirectX::XMMATRIX Model::getWorldModelWithRotation(const float & degrees)
+void Model::setUniformScale(const float & scalar)
 {
-	DirectX::XMMATRIX rotationMatrix;
-	DirectX::XMFLOAT3 pos = this->worldPos;
-	float x, y, z;
-	x = this->worldPos.x * -1;
-	y = this->worldPos.y * -1;
-	z = this->worldPos.z * -1;
+	this->scaleMatrix = DirectX::XMMatrixScaling(scalar, scalar, scalar);
+}
 
-	//translate the worldmatrix to origin first
-	this->worldMatrix *= DirectX::XMMatrixTranslation(x, y, z);
-	
-	//add rotation
-	rotationMatrix = DirectX::XMMatrixRotationY(degrees);
-	this->worldMatrix *= rotationMatrix;
-	
-	//translate back
-	this->worldMatrix *= DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+void Model::rotateModelY(const float & degree)
+{
+	this->rotationMatrix = DirectX::XMMatrixRotationY(degree);
+}
 
-	//DirectX want it transposed in the gpu
-	return DirectX::XMMatrixTranspose(this->worldMatrix);
+void Model::spinnY(const float & degree)
+{
+	this->passiveSpinning = degree;
+	this->isSpinning = true;
+}
+
+void Model::update()
+{
+	if (this->isSpinning == true)
+	{
+		this->rotationMatrix *= DirectX::XMMatrixRotationY(this->passiveSpinning);
+	}
+	this->worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 }
 
 void Model::shutdown()

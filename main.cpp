@@ -66,8 +66,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 				//engine.fillCBuffers(triangle.getWorldModelWithRotation(0.0001), gameCamera);
 				
 				//without rotation
+				triangle.update();
 				engine.fillCBuffers(triangle.getWorldModel(), gameCamera);
-				
 				engine.drawObject(triangle);
 			}
 		}
