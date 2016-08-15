@@ -12,6 +12,12 @@ Model::Model()
 	this->translationMatrix = DirectX::XMMatrixIdentity();
 
 	this->isSpinning = false;
+	this->passiveSpinning = 0;
+
+	this->scaleSpeed = 0;
+	this->tempScale = 1.0f;
+	this->isScaling = false;
+	this->scaleState = false;
 }
 
 
@@ -24,8 +30,6 @@ void Model::generateTriangle()
 	Vertex1 v0;
 	Vertex1 v1;
 	Vertex1 v2;
-
-
 
 	//Vertex data
 	v0.Pos = DirectX::XMFLOAT3(0, 1, 0);
@@ -74,7 +78,9 @@ void Model::initializeTriangle(ID3D11Device * gDevice, ID3D11DeviceContext * gDe
 
 	this->rotateModelY(0);
 	this->setUniformScale(1);
-	this->spinnY(0.001);
+
+	//this->spinnY(0.001);
+	this->uniformScaleIndication(0.0001);
 
 	D3D11_BUFFER_DESC desc;
 	desc.Usage = D3D11_USAGE_DYNAMIC;
@@ -131,11 +137,40 @@ void Model::spinnY(const float & degree)
 	this->isSpinning = true;
 }
 
+void Model::uniformScaleIndication(const float & speed)
+{
+	this->scaleSpeed = speed;
+	this->tempScale = 1.0f;
+	this->isScaling = true;
+	this->scaleState = true;
+}
+
 void Model::update()
 {
 	if (this->isSpinning == true)
 	{
 		this->rotationMatrix *= DirectX::XMMatrixRotationY(this->passiveSpinning);
+	}
+
+	if (this->isScaling == true)
+	{
+		if (this->tempScale < 3.0000 && this->scaleState == true)
+		{
+			//grow state
+			this->tempScale += this->scaleSpeed;
+			this->setUniformScale(tempScale);
+		}
+		else if (this->tempScale > 1.0f && this->scaleState == false)
+		{
+			//shrink state
+			this->tempScale -= this->scaleSpeed;
+			this->setUniformScale(tempScale);
+		}
+		else
+		{
+			//swap state
+			this->scaleState = !this->scaleState;
+		}
 	}
 	this->worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 }

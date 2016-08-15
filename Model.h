@@ -23,6 +23,11 @@ private:
 	float passiveSpinning;
 	bool isSpinning;
 	
+	float scaleSpeed;
+	float tempScale;
+	bool isScaling;
+	bool scaleState;
+
 public:
 	Model();
 	virtual ~Model();
@@ -34,8 +39,13 @@ public:
 	DirectX::XMMATRIX getWorldModel() const;
 
 	void setUniformScale(const float& scalar);
+
+	//rotation functions
 	void rotateModelY(const float& degree);
 	void spinnY(const float& degree);
+
+	//scaling functions
+	void uniformScaleIndication(const float &speed);
 
 	void update();
 

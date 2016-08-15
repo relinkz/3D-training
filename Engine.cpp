@@ -338,8 +338,11 @@ void Engine::fillCBuffers(DirectX::XMMATRIX modelWorldMatrix, const Camera &game
 	desc.MiscFlags = false;
 	desc.StructureByteStride = 0;
 
-	//dynamic buffers does not need initial data
-	result = gDevice->CreateBuffer(&desc, nullptr, &this->matrixBuffer);
+	if (this->matrixBuffer == nullptr)
+	{
+		//dynamic buffers does not need initial data
+		result = gDevice->CreateBuffer(&desc, nullptr, &this->matrixBuffer);
+	}
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 
