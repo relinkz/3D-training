@@ -9,10 +9,6 @@ HWND InitWindow(HINSTANCE hInstance);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
-
-
-
-
 /*
  Entry point for our program
  This part of the code uses extensively Windows Datatypes, please the following
