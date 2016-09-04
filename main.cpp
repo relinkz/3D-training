@@ -32,6 +32,9 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 	//create triangle
 	Model triangle;
 	
+	//timeClock
+	GameTimer gameTime;
+
 	// window is valid
 	if (wndHandle)
 	{
@@ -43,7 +46,9 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		
 		//initialize triangle
 		DirectX::XMFLOAT3 worldpos(0, 0, 2);
-		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext(), worldpos);		
+		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext(), worldpos);	
+
+		gameTime.Reset();
 
 		// enter message loop, loop until the message WM_QUIT is received.
 		while (WM_QUIT != msg.message)
@@ -57,6 +62,10 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 			}
 			else
 			{
+				gameTime.Tick();
+				
+				//update scene(mTimer.DeltaTime)
+				float fps = gameTime.DeltaTime();
 				// update/render goes here
 				//with rotation
 				//engine.fillCBuffers(triangle.getWorldModelWithRotation(0.0001), gameCamera);

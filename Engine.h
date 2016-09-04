@@ -3,6 +3,7 @@
 #include"GlobalData.h"
 #include "Model.h"
 #include "Camera.h"
+#include "GameTimer.h"
 
 class Engine
 {
