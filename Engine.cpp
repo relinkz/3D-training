@@ -27,6 +27,7 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+
 }
 
 bool Engine::initialize(HWND* window)
