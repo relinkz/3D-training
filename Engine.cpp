@@ -22,6 +22,8 @@ Engine::Engine()
 	this->inputLayout = nullptr;
 
 	this->matrixBuffer = nullptr;
+
+	this->m_camera = nullptr;
 }
 
 
@@ -244,6 +246,9 @@ bool Engine::initialize(HWND* window)
 
 	result = gDevice->CreatePixelShader(pPS->GetBufferPointer(), pPS->GetBufferSize(), nullptr, &this->pixelShader);
 
+	//initialize camera
+	this->m_camera = new Camera();
+
 	return true;
 }
 
@@ -313,6 +318,25 @@ void Engine::shutdown()
 	{
 		this->gDevice->Release();
 		this->gDevice = nullptr;
+	}
+
+	if (this->m_camera != nullptr)
+	{
+		delete this->m_camera;
+		this->m_camera = nullptr;
+	}
+}
+
+void Engine::update()
+{
+	for (int i = 0; i < this->m_worldObj.size(); i++)
+	{
+		Model* ptr = nullptr;
+		ptr = this->m_worldObj.at(i);
+
+		ptr->update();
+		this->fillCBuffers(ptr->getWorldModel(), *this->m_camera);
+		this->drawObject(*ptr);
 	}
 }
 
@@ -388,4 +412,9 @@ void Engine::drawObject(Model &toDraw)
 
 	this->gDeviceContext->Draw(3, 0);
 	HRESULT result = this->gSwapChain->Present(0, 0);
+}
+
+void Engine::addModel(Model * ptr)
+{
+	this->m_worldObj.push_back(ptr);
 }

@@ -20,6 +20,10 @@ private:
 	//Checks feature support and allocating resources
 	ID3D11Device* gDevice;
 
+	Camera* m_camera;
+
+	std::vector<Model*> m_worldObj;
+
 	//check 4x MSAA quality support
 	bool enable4xMSAA; //false by default
 	UINT g4xMsaaQuality;
@@ -46,11 +50,14 @@ public:
 
 	bool initialize(HWND* window);
 	void shutdown();
+	void update();
 
 	ID3D11Device* getDevice();
 	ID3D11DeviceContext* getDeviceContext();
 
 	void fillCBuffers(DirectX::XMMATRIX modelWorldMatrix, const Camera &gameCamera);
 	void drawObject(Model &toDraw);
+
+	void addModel(Model* ptr);
 };
 

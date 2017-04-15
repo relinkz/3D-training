@@ -26,12 +26,9 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 	//create engine
 	Engine engine;
 
-	//create camera
-	Camera gameCamera;
-
 	//create triangle
-	Model triangle;
-	
+	Model* triangle = new Model;
+
 	//timeClock
 	GameTimer gameTime;
 
@@ -46,7 +43,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		
 		//initialize triangle
 		DirectX::XMFLOAT3 worldpos(0, 0, 2);
-		triangle.initializeTriangle(engine.getDevice(), engine.getDeviceContext(), worldpos);	
+		triangle->initializeTriangle(engine.getDevice(), engine.getDeviceContext(), worldpos);	
+		engine.addModel(triangle);
 
 		gameTime.Reset();
 
@@ -64,16 +62,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 			{
 				gameTime.Tick();
 				
-				//update scene(mTimer.DeltaTime)
 				float fps = gameTime.DeltaTime();
-				// update/render goes here
-				//with rotation
-				//engine.fillCBuffers(triangle.getWorldModelWithRotation(0.0001), gameCamera);
-				
-				//without rotation
-				triangle.update();
-				engine.fillCBuffers(triangle.getWorldModel(), gameCamera);
-				engine.drawObject(triangle);
+				engine.update();
 			}
 		}
 
@@ -83,7 +73,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		//release resourses
 		engine.shutdown();
 
-		triangle.shutdown();
+		triangle->shutdown();
+		delete triangle;
 
 
 	}
