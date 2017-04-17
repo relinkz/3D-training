@@ -33,7 +33,10 @@ public:
 	virtual ~Model();
 
 	void generateTriangle();
+	void generateBoid();
+
 	void initializeTriangle(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext, const DirectX::XMFLOAT3& pos);
+	void initializeBoid(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext, const DirectX::XMFLOAT3& pos);
 
 	ID3D11Buffer* getVertexBuffer() const;
 	DirectX::XMMATRIX getWorldModel() const;
@@ -54,4 +57,3 @@ public:
 	//load from file
 	//initialize
 };
-
