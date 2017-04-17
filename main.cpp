@@ -26,6 +26,9 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 	//create engine
 	Engine engine;
 
+	//input handler
+	InputHandler inputHandler;
+
 	//create triangle
 	Model* triangle = new Model;
 
@@ -41,6 +44,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		//initialize engine
 		engine.initialize(&wndHandle);
 		
+		inputHandler.initialize(hInstance, wndHandle);
+
 		//initialize triangle
 		DirectX::XMFLOAT3 worldpos(0, 0, 2);
 		triangle->initializeTriangle(engine.getDevice(), engine.getDeviceContext(), worldpos);	
@@ -64,6 +69,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 				
 				float fps = gameTime.DeltaTime();
 				engine.update();
+
+				inputHandler.frame();
 			}
 		}
 
@@ -72,6 +79,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 
 		//release resourses
 		engine.shutdown();
+
+		inputHandler.shutdown();
 
 		triangle->shutdown();
 		delete triangle;

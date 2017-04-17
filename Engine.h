@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "GameTimer.h"
+#include "inputHandler.h"
 
 class Engine
 {
