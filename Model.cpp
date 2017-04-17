@@ -12,7 +12,7 @@ Model::Model()
 	this->translationMatrix = DirectX::XMMatrixIdentity();
 
 	this->isSpinning = false;
-	this->passiveSpinning = 0;
+	this->passiveSpinning = 0.0f;
 
 	this->scaleSpeed = 0;
 	this->tempScale = 1.0f;
