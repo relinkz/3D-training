@@ -73,7 +73,7 @@ void InputHandler::shutdown()
 	}
 }
 
-void InputHandler::frame()
+void InputHandler::update(Camera* cam)
 {
 	bool result;
 
@@ -87,7 +87,7 @@ void InputHandler::frame()
 	int i = 0;
 
 	if (this->qPressed())
-		i = 5;
+		cam->rotateCameraY(0.001);
 	if (this->ePressed())
 		i = 7;
 }
@@ -117,15 +117,7 @@ bool InputHandler::readKeyboard()
 bool InputHandler::qPressed() const
 {
 	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
-	if (m_keyboardState[DIK_ESCAPE] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-
-	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
-	if (m_keyboardState[DIK_Q] & 0x80)
+	if (this->m_keyboardState[DIK_Q])
 	{
 		return true;
 	}

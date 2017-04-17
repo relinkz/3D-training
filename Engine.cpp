@@ -340,6 +340,11 @@ void Engine::update()
 	}
 }
 
+void Engine::rotateCameraY(float radian)
+{
+	this->rotateCameraY(radian);
+}
+
 ID3D11Device* Engine::getDevice()
 {
 	return this->gDevice;
@@ -348,6 +353,12 @@ ID3D11Device* Engine::getDevice()
 ID3D11DeviceContext* Engine::getDeviceContext()
 {
 	return this->gDeviceContext;
+}
+
+Camera* Engine::getCamera()
+{
+	// TODO: insert return statement here
+	return this->m_camera;
 }
 
 void Engine::fillCBuffers(DirectX::XMMATRIX modelWorldMatrix, const Camera &gameCamera)

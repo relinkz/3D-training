@@ -34,3 +34,13 @@ DirectX::XMMATRIX Camera::getOrthogMatrix() const
 	return DirectX::XMMatrixTranspose(toReturn);
 	//return toReturn;
 }
+
+void Camera::rotateCameraY(float radius)
+{
+	//av någon anledning så roterar den tillbaka, to tired to think :(
+
+	DirectX::XMMATRIX rot = DirectX::XMMatrixRotationY(radius);
+	this->target = DirectX::XMVector3Transform(this->target,rot);
+
+	//this->position = DirectX::XMVectorAdd(this->position, DirectX::XMVectorSet(0, 0, 0.01, 0));
+}

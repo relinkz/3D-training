@@ -70,7 +70,7 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 				float fps = gameTime.DeltaTime();
 				engine.update();
 
-				inputHandler.frame();
+				inputHandler.update(engine.getCamera());
 			}
 		}
 

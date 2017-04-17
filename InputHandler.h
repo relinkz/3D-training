@@ -31,7 +31,7 @@ public:
 
 	void initialize(HINSTANCE inst, HWND wnd);
 	void shutdown();
-	void frame();
+	void update(Camera* cam);
 	bool readKeyboard();
 
 	bool qPressed() const;
